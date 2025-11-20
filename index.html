@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dealership - Home</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<!-- Topbar will be inserted via JS -->
+<!-- Event banner -->
+<div id="event-banner" class="event-banner"></div>
+
+<!-- Newest cars section -->
+<section class="newest-cars">
+    <h2>Our Newest Cars</h2>
+    <div id="cars-container" class="cars-container"></div>
+</section>
+
+<script src="js/topbar.js"></script>
+<script src="js/api.js"></script>
+<script>
+    createTopBar();
+
+    async function loadEvent() {
+        try {
+            const event = await API.getEvent();
+            const banner = document.getElementById('event-banner');
+
+            if (event && event.photoUrl) {
+                banner.innerHTML = `<img src="${event.photoUrl}" alt="Event Banner">`;
+            } else {
+                banner.textContent = "No current event";
+            }
+        } catch(e) {
+            console.error('Failed to load event:', e);
+        }
+    }
+
+    // Load newest cars
+    async function loadNewestCars() {
+        try {
+            const cars = await API.getNewestCars();
+            const container = document.getElementById('cars-container');
+            container.innerHTML = ''; // clear previous
+
+            cars.forEach(car => {
+                const carCard = document.createElement('div');
+                carCard.className = 'car-card';
+                carCard.innerHTML = `
+                    <a href="car.html?id=${car.id}">
+                        <img src="${car.photoUrl}" alt="${car.brand} ${car.model}">
+                        <div class="car-info">
+                            <h3>${car.brand} ${car.model}</h3>
+                            <p>Year: ${car.year} | Color: ${car.color}</p>
+                            <p>Price: $${car.price}</p>
+                        </div>
+                    </a>
+                `;
+                container.appendChild(carCard);
+            });
+        } catch(e) {
+            console.error('Failed to load newest cars:', e);
+        }
+    }
+
+    // Initialize page
+    loadEvent();
+    loadNewestCars();
+</script>
+</body>
+</html>

@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dealership - Admin Panel</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            overflow-y: scroll;
+        }
+        .topbar { margin-bottom: 20px; }
+        .admin-container {
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+            gap: 30px;
+        }
+        .admin-menu {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .admin-menu h3 {
+            margin-top: 0;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 10px;
+        }
+        th, td {
+            padding: 8px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        button {
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 5px;
+            margin: 5px 0 10px 0;
+        }
+    </style>
+</head>
+<body>
+
+<script src="js/topbar.js"></script>
+<script src="js/api.js"></script>
+
+<script>
+    createTopBar();
+</script>
+
+<div class="admin-container">
+    <!-- Login Form -->
+    <div id="login-menu" class="admin-menu">
+        <h3>Admin Login</h3>
+        <form id="login-form">
+            <label>
+                Admin Code:
+                <input type="password" name="code" required>
+            </label>
+            <button type="submit">Login</button>
+        </form>
+        <div id="login-result"></div>
+    </div>
+
+    <!-- Admin Panels (hidden until login) -->
+    <div id="admin-panels" style="display:none; flex-direction: column; gap:20px;">
+
+        <!-- 1. Manage Cars -->
+        <div class="admin-menu" id="cars-menu">
+            <h3>Manage Cars</h3>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th><th>Brand</th><th>Model</th><th>Year</th><th>Price</th><th>Color</th><th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="cars-table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- 2. Add New Car -->
+        <div class="admin-menu" id="add-car-menu">
+            <h3>Add New Car</h3>
+            <form id="add-car-form">
+                <label>Brand: <input type="text" name="brand" required></label>
+                <label>Model: <input type="text" name="model" required></label>
+                <label>Year: <input type="number" name="year" required></label>
+                <label>Mileage: <input type="number" name="mileage" required></label>
+                <label>Color: <input type="text" name="color" required></label>
+                <label>Price: <input type="number" step="0.01" name="price" required></label>
+                <label>Description: <textarea name="description"></textarea></label>
+                <label>Photos: <input type="file" name="photos" multiple accept="image/*"></label>
+                <button type="submit">Add Car</button>
+            </form>
+            <div id="add-car-result"></div>
+        </div>
+
+        <!-- 3. Contact Messages -->
+        <div class="admin-menu" id="messages-menu">
+            <h3>Contact Messages</h3>
+            <button id="delete-all-messages">Delete All Messages</button>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th><th>Name</th><th>Phone</th><th>Message</th><th>Created At</th><th>Actions</th>
+                </tr>
+                </thead>
+                <tbody id="messages-table-body"></tbody>
+            </table>
+        </div>
+
+        <!-- 4. Event Photo -->
+        <div class="admin-menu" id="event-menu">
+            <h3>Event Photo</h3>
+            <form id="event-form">
+                <label>Upload Photo: <input type="file" name="photo" accept="image/*"></label>
+                <button type="submit">Create/Replace Event</button>
+            </form>
+            <button id="delete-event">Delete Current Event</button>
+            <div id="event-result"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // -------------------- Helper --------------------
+    function showAdminPanels() {
+        document.getElementById('login-menu').style.display = 'none';
+        document.getElementById('admin-panels').style.display = 'flex';
+        loadCars();
+        loadMessages();
+    }
+
+    async function checkAdminSession() {
+        try {
+            // Try to fetch a protected resource to see if session is active
+            await API.getAllContactMessages();
+            showAdminPanels();
+        } catch(e) {
+            // Not logged in
+            console.log('Not logged in as admin');
+        }
+    }
+
+    checkAdminSession();
+
+    // -------------------- Login --------------------
+    const loginForm = document.getElementById('login-form');
+    const loginResult = document.getElementById('login-result');
+
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const code = loginForm.code.value;
+
+        try {
+            await API.adminLogin({ code });
+            loginResult.textContent = 'Login successful!';
+            showAdminPanels();
+        } catch(err) {
+            console.error(err);
+            loginResult.textContent = 'Login failed: ' + (err.message || err);
+        }
+    });
+
+    // -------------------- Cars --------------------
+    const carsTableBody = document.getElementById('cars-table-body');
+
+    async function loadCars() {
+        try {
+            const cars = await API.getAllCars();
+            carsTableBody.innerHTML = '';
+            cars.forEach(car => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${car.id}</td>
+                    <td>${car.brand}</td>
+                    <td>${car.model}</td>
+                    <td>${car.year}</td>
+                    <td>${car.price}</td>
+                    <td>${car.color}</td>
+                    <td><button data-id="${car.id}" class="delete-car-btn">Delete</button></td>
+                `;
+                carsTableBody.appendChild(row);
+            });
+
+            document.querySelectorAll('.delete-car-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const carId = btn.dataset.id;
+                    if (confirm('Delete this car?')) {
+                        await API.deleteCar(carId);
+                        loadCars();
+                    }
+                });
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    // -------------------- Add Car --------------------
+    const addCarForm = document.getElementById('add-car-form');
+    const addCarResult = document.getElementById('add-car-result');
+
+    addCarForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        const formObject = {
+            brand: addCarForm.brand.value,
+            model: addCarForm.model.value,
+            year: parseInt(addCarForm.year.value),
+            mileage: parseInt(addCarForm.mileage.value),
+            color: addCarForm.color.value,
+            price: parseFloat(addCarForm.price.value),
+            description: addCarForm.description.value
+        };
+        formData.append('formData', JSON.stringify(formObject));
+
+        Array.from(addCarForm.photos.files).forEach(file => formData.append('photos', file));
+
+        try {
+            await API.createCar(formData);
+            addCarResult.textContent = 'Car created successfully!';
+            addCarForm.reset();
+            loadCars();
+        } catch(err) {
+            console.error(err);
+            addCarResult.textContent = 'Failed to create car.';
+        }
+    });
+
+    // -------------------- Contact Messages --------------------
+    const messagesTableBody = document.getElementById('messages-table-body');
+    const deleteAllMessagesBtn = document.getElementById('delete-all-messages');
+
+    async function loadMessages() {
+        try {
+            const messages = await API.getAllContactMessages();
+            messagesTableBody.innerHTML = '';
+            messages.forEach(msg => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${msg.id}</td>
+                    <td>${msg.username}</td>
+                    <td>${msg.phone}</td>
+                    <td>${msg.message}</td>
+                    <td>${msg.createdAt}</td>
+                    <td><button data-id="${msg.id}" class="delete-msg-btn">Delete</button></td>
+                `;
+                messagesTableBody.appendChild(row);
+            });
+
+            document.querySelectorAll('.delete-msg-btn').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const id = btn.dataset.id;
+                    if (confirm('Delete this message?')) {
+                        await API.deleteContactMessage(id);
+                        loadMessages();
+                    }
+                });
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
+    deleteAllMessagesBtn.addEventListener('click', async () => {
+        if (confirm('Delete all messages?')) {
+            try {
+                await API.deleteAllContactMessages();
+                loadMessages();
+            } catch(err) {
+                console.error(err);
+            }
+        }
+    });
+
+    // -------------------- Event --------------------
+    const eventForm = document.getElementById('event-form');
+    const deleteEventBtn = document.getElementById('delete-event');
+    const eventResult = document.getElementById('event-result');
+
+    eventForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fileInput = eventForm.photo.files[0];
+        const formData = new FormData();
+        if (fileInput) formData.append('photo', fileInput);
+
+        try {
+            await API.createOrReplaceEvent(formData);
+            eventResult.textContent = 'Event updated successfully!';
+            eventForm.reset();
+        } catch(err) {
+            console.error(err);
+            eventResult.textContent = 'Failed to update event.';
+        }
+    });
+
+    deleteEventBtn.addEventListener('click', async () => {
+        if (confirm('Delete current event?')) {
+            try {
+                await API.deleteEvent();
+                eventResult.textContent = 'Event deleted.';
+            } catch(err) {
+                console.error(err);
+                eventResult.textContent = 'Failed to delete event.';
+            }
+        }
+    });
+
+</script>
+</body>
+</html>

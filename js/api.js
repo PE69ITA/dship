@@ -1,5 +1,5 @@
 const API = {
-    BASE_URL: 'http://localhost:8080', // or your backend host
+    BASE_URL: 'http://localhost:8080',
 
     // ---- Admin Login ----
     adminLogin: async (data) => {

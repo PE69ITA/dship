@@ -30,7 +30,6 @@ function createTopBar() {
     logoLink.appendChild(logoImg);
     logoWrapper.appendChild(logoLink);
 
-    // Compose topbar
     topbar.append(left, logoWrapper);
 
     // Insert at top

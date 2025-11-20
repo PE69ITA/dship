@@ -7,11 +7,11 @@ function createTopBar() {
     left.className = 'topbar-left';
 
     const contactLink = document.createElement('a');
-    contactLink.href = '/dealershipsafe/contact.html';
+    contactLink.href = '/dship/contact.html';
     contactLink.textContent = 'Contact';
 
     const carsLink = document.createElement('a');
-    carsLink.href = '/dealershipsafe/allcars.html';
+    carsLink.href = '/dship/allcars.html';
     carsLink.textContent = 'All Cars';
 
     left.append(contactLink, carsLink);
@@ -21,7 +21,7 @@ function createTopBar() {
     logoWrapper.className = 'topbar-logo';
 
     const logoLink = document.createElement('a');
-    logoLink.href = '/dealershipsafe/index.html';
+    logoLink.href = '/dship/index.html';
 
     const logoImg = document.createElement('img');
     logoImg.src = './assets/logo.png';

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dealership - Car Details</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<div id="event-banner" class="event-banner"></div>
+
+<section class="car-details">
+    <div id="car-container" class="car-container"></div>
+</section>
+
+<script src="js/topbar.js"></script>
+<script src="js/api.js"></script>
+<script>
+    createTopBar();
+
+    function getCarIdFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        return params.get('id');
+    }
+
+    async function loadEvent() {
+        try {
+            const event = await API.getEvent();
+            const banner = document.getElementById('event-banner');
+            if (event && event.photoUrl) {
+                banner.innerHTML = `<img src="${event.photoUrl}" alt="Event Banner">`;
+            } else {
+                banner.textContent = "No current event";
+            }
+        } catch(e) {
+            console.error('Failed to load event:', e);
+        }
+    }
+
+    async function loadCar() {
+        const carId = getCarIdFromUrl();
+        if (!carId) {
+            document.getElementById('car-container').textContent = 'Car ID missing.';
+            return;
+        }
+
+        try {
+            const car = await API.getCarById(carId);
+            const container = document.getElementById('car-container');
+
+            container.innerHTML = `
+            <h2>${car.brand} ${car.model}</h2>
+            <div class="car-photos-wrapper">
+                <div class="car-photos">
+                    ${car.photoUrls.map(url => `<img src="${url}" alt="${car.brand} ${car.model}">`).join('')}
+                </div>
+            </div>
+            <p><strong>Year:</strong> ${car.year}</p>
+            <p><strong>Mileage:</strong> ${car.mileage} km</p>
+            <p><strong>Color:</strong> ${car.color}</p>
+            <p><strong>Price:</strong> $${car.price}</p>
+            <p><strong>Description:</strong> ${car.description}</p>
+        `;
+
+            // ===== Drag functionality =====
+            const carousel = container.querySelector('.car-photos');
+            let isDragging = false;
+            let startX = 0;
+            let currentTranslate = 0;
+            let prevTranslate = 0;
+
+            const imagesCount = carousel.children.length;
+            const wrapperWidth = carousel.parentElement.offsetWidth;
+
+            function clampTranslate(value) {
+                const maxTranslate = 0;
+                const minTranslate = -wrapperWidth * (imagesCount - 1);
+                return Math.max(minTranslate, Math.min(value, maxTranslate));
+            }
+
+            carousel.addEventListener('mousedown', e => {
+                isDragging = true;
+                startX = e.clientX;
+                carousel.style.cursor = 'grabbing';
+            });
+
+            carousel.addEventListener('mousemove', e => {
+                if (!isDragging) return;
+                const dx = e.clientX - startX;
+                currentTranslate = clampTranslate(prevTranslate + dx);
+                carousel.style.transform = `translateX(${currentTranslate}px)`;
+            });
+
+            carousel.addEventListener('mouseup', () => {
+                isDragging = false;
+                prevTranslate = currentTranslate;
+                carousel.style.cursor = 'grab';
+            });
+
+            carousel.addEventListener('mouseleave', () => {
+                if (isDragging) prevTranslate = currentTranslate;
+                isDragging = false;
+                carousel.style.cursor = 'grab';
+            });
+
+            // Touch support
+            carousel.addEventListener('touchstart', e => {
+                startX = e.touches[0].clientX;
+                isDragging = true;
+            });
+
+            carousel.addEventListener('touchmove', e => {
+                if (!isDragging) return;
+                const dx = e.touches[0].clientX - startX;
+                currentTranslate = clampTranslate(prevTranslate + dx);
+                carousel.style.transform = `translateX(${currentTranslate}px)`;
+            });
+
+            carousel.addEventListener('touchend', e => {
+                isDragging = false;
+                prevTranslate = currentTranslate;
+            });
+
+        } catch(e) {
+            console.error('Failed to load car:', e);
+            document.getElementById('car-container').textContent = 'Car not found.';
+        }
+    }
+
+    loadEvent();
+    loadCar();
+</script>
+</body>
+</html>

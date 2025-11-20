@@ -1,0 +1,472 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100vw;
+    max-width: 100vw;
+    box-sizing: border-box;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    overflow-y: scroll;
+}
+* {
+}
+
+
+*{
+    margin:0;
+    padding:0;
+    font-family: Tahoma, sans-serif;
+    box-sizing: inherit;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    gap: 10px;
+    height: fit-content;
+    min-height: 120px;
+    background-color: #fff;
+    position: relative;
+}
+
+.topbar-left{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar-left a {
+    margin-right: 15px;
+    text-decoration: none;
+    color: #000;
+    font-weight: 500;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    border: 1px solid #000;
+}
+
+.topbar-logo {
+    position: absolute;
+    left: 50%;
+    height: 100%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    a{
+        height: 100%;
+        img{
+            width: auto;
+            height: 100%;
+        }
+    }
+}
+
+.topbar-logo img {
+    height: 40px;
+}
+
+
+
+
+
+
+
+
+
+
+
+/* ===== All Cars Container ===== */
+.all-cars {
+    width: 100vw;
+    padding: 30px 40px 0 40px;
+    box-sizing: border-box;
+}
+
+.all-cars h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Adaptive side padding for all-cars */
+@media (max-width: 1024px) { .all-cars { padding: 0 30px; } }
+@media (max-width: 768px)  { .all-cars { padding: 0 20px; } }
+@media (max-width: 425px)  { .all-cars { padding: 0 15px; } }
+@media (max-width: 375px)  { .all-cars { padding: 0 10px; } }
+
+
+/* ===== Event Banner ===== */
+.event-banner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-width: 100vw;
+    padding: 20px 0;
+    box-sizing: border-box;
+}
+
+.event-banner img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    width: 100%;
+    max-height: 180px;
+    object-fit: cover;
+    margin-bottom: 20px;
+}
+
+/* Adaptive vertical padding for event banner */
+@media (max-width: 1024px) { .event-banner { padding: 18px 0; } }
+@media (max-width: 768px)  { .event-banner { padding: 16px 0; } }
+@media (max-width: 425px)  { .event-banner { padding: 12px 0; } }
+@media (max-width: 375px)  { .event-banner { padding: 8px 0; } }
+
+/* ===== Newest Cars Container ===== */
+.newest-cars {
+    width: 100vw;
+    padding: 30px 40px 0 40px;
+    box-sizing: border-box;
+}
+
+.newest-cars h2 {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Adaptive side padding */
+@media (max-width: 1024px) { .newest-cars { padding: 0 30px; } }
+@media (max-width: 768px)  { .newest-cars { padding: 0 20px; } }
+@media (max-width: 425px)  { .newest-cars { padding: 0 15px; } }
+@media (max-width: 375px)  { .newest-cars { padding: 0 10px; } }
+
+/* Cars grid container */
+.cars-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+/* Adaptive gap */
+@media (max-width: 1024px) { .cars-container { gap: 16px; } }
+@media (max-width: 768px)  { .cars-container { gap: 12px; } }
+@media (max-width: 425px)  { .cars-container { gap: 8px; } }
+@media (max-width: 375px)  { .cars-container { flex-direction: column; align-items: center; gap: 12px; justify-content: space-around; } }
+
+/* ===== Car Card ===== */
+.car-card {
+    flex: 1 1 calc(33.33% - 20px); /* 3 per row with gap */
+    max-width: 350px;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    background: #fff;
+    transition: transform 0.2s;
+}
+
+.car-card:hover {
+    transform: translateY(-5px);
+}
+
+.car-card a {
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* Car image */
+.car-card img {
+    width: 100%;
+    height: auto;
+    max-height: 50%;
+    flex: 0 0 40%;
+    object-fit: cover;
+}
+
+/* Car info section */
+.car-info {
+    flex: 1 1 60%;
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.car-info h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.8rem;
+    color: #8B0000	;
+}
+
+
+/* Adaptive text sizes */
+@media (max-width: 1024px) { .car-info h3 { font-size: 1.5rem; } .car-info p { font-size: 0.95rem; } }
+@media (max-width: 768px)  { .car-info h3 { font-size: 1.2rem; } .car-info p { font-size: 0.9rem; } }
+@media (max-width: 425px)  { .car-info h3 { font-size: 1rem; } .car-info p { font-size: 0.85rem; } }
+@media (max-width: 375px)  { .car-info h3 { font-size: 0.9rem; } .car-info p { font-size: 0.8rem; } }
+
+/* Single column adjustments */
+@media (max-width: 375px) {
+    .car-card {
+        max-width: 90%;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Contact Form Section ===== */
+.contact-form-section {
+    width: 100vw;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    align-items: center;
+    padding: 40px 20px;
+    box-sizing: border-box;
+}
+
+/* Form container */
+#contact-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 500px;
+    padding: 20px;
+    background-color: #f2f2f2; /* slight gray */
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-sizing: border-box;
+}
+
+/* Adaptive gap between fields */
+@media (max-width: 1024px) { #contact-form { gap: 12px; } }
+@media (max-width: 768px)  { #contact-form { gap: 10px; } }
+@media (max-width: 425px)  { #contact-form { gap: 8px; padding: 16px; } }
+@media (max-width: 375px)  { #contact-form { gap: 6px; padding: 12px; } }
+
+/* Form labels and inputs */
+#contact-form label {
+    display: flex;
+    flex-direction: column;
+    font-size: 1rem;
+    color: #333;
+}
+
+/* Adaptive text */
+@media (max-width: 1024px) { #contact-form label { font-size: 0.95rem; } }
+@media (max-width: 768px)  { #contact-form label { font-size: 0.9rem; } }
+@media (max-width: 425px)  { #contact-form label { font-size: 0.85rem; } }
+@media (max-width: 375px)  { #contact-form label { font-size: 0.8rem; } }
+
+#contact-form input,
+#contact-form textarea {
+    margin-top: 5px;
+    padding: 10px;
+    border: 1px solid #bbb;
+    border-radius: 8px;
+    font-size: 1rem;
+    resize: vertical;
+}
+
+/* Adaptive input size */
+@media (max-width: 1024px) { #contact-form input, #contact-form textarea { font-size: 0.95rem; } }
+@media (max-width: 768px)  { #contact-form input, #contact-form textarea { font-size: 0.9rem; } }
+@media (max-width: 425px)  { #contact-form input, #contact-form textarea { font-size: 0.85rem; } }
+@media (max-width: 375px)  { #contact-form input, #contact-form textarea { font-size: 0.8rem; } }
+
+/* Submit button */
+#contact-form button {
+    padding: 12px;
+    background-color: #d0d0d0; /* slightly darker gray than form */
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+#contact-form button:hover {
+    background-color: #b8b8b8;
+    transform: translateY(-2px);
+}
+
+/* Result message */
+#contact-result {
+    margin-top: 15px;
+    font-size: 1rem;
+    color: #333;
+    text-align: center;
+}
+
+/* Adaptive section padding */
+@media (max-width: 1024px) { .contact-form-section { padding: 35px 15px; } }
+@media (max-width: 768px)  { .contact-form-section { padding: 30px 10px; } }
+@media (max-width: 425px)  { .contact-form-section { padding: 25px 8px; } }
+@media (max-width: 375px)  { .contact-form-section { padding: 20px 5px; } }
+
+
+
+
+
+
+
+
+
+
+
+
+/* ===== Car Details Section ===== */
+.car-details {
+    width: 100vw;
+    padding: 40px 20px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Car container */
+.car-container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    box-sizing: border-box;
+}
+
+/* Car title */
+.car-container h2 {
+    margin-bottom: 20px;
+    font-size: 2rem;
+    text-align: left;
+}
+
+/* Carousel container */
+.car-photos {
+    display: flex;
+    overflow-x: auto;
+    gap: 10px;
+    scroll-behavior: smooth;
+    padding-bottom: 10px;
+}
+
+.car-photos img {
+    flex: 0 0 auto;
+    height: 250px;
+    object-fit: cover;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* Field/value pairs */
+.car-container p {
+    display: flex;
+    width: 100%;
+    justify-content: flex-start;
+    padding: 5px 20%;
+    margin: 0;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.car-container p strong {
+    margin-right: 10px;
+    width: 120px; /* fixed width for labels */
+    flex-shrink: 0;
+}
+
+/* Gap between carousel and first info field */
+.car-photos + p {
+    margin-top: 20px;
+}
+
+/* Optional: make carousel images slightly scrollable on mobile */
+@media (max-width: 768px) {
+    .car-photos img {
+        height: 200px;
+    }
+}
+
+@media (max-width: 425px) {
+    .car-photos img {
+        height: 150px;
+    }
+    .car-container p {
+        padding: 5px 10%;
+    }
+}
+
+
+/* Carousel styles */
+.car-photos-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.car-photos {
+    display: flex;
+    transition: transform 0.4s ease-in-out;
+}
+
+.car-photos img {
+    flex: 0 0 100%; /* each image full width */
+    height: 400px; /* fixed height, adjust as needed */
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+/* Carousel wrapper */
+.car-photos-wrapper {
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    cursor: grab;
+}
+
+/* Photo container */
+.car-photos {
+    display: flex;
+    transition: transform 0.3s ease;
+}
+
+.car-photos img {
+    flex: 0 0 100%;
+    max-height: 400px;
+    object-fit: cover;
+    border-radius: 10px;
+    user-select: none;
+}

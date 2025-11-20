@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dealership - Contact Us</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<section class="contact-form-section">
+    <h2>Contact Us</h2>
+    <form id="contact-form">
+        <label>
+            Name:
+            <input type="text" name="username" required>
+        </label>
+        <label>
+            Phone:
+            <input type="text" name="phone" required>
+        </label>
+        <label>
+            Message:
+            <textarea name="message" required></textarea>
+        </label>
+        <button type="submit">Send</button>
+    </form>
+    <div id="contact-result"></div>
+</section>
+
+<script src="js/topbar.js"></script>
+<script src="js/api.js"></script>
+<script>
+    // Insert topbar
+    createTopBar();
+
+    // Handle form submission
+    const form = document.getElementById('contact-form');
+    const resultDiv = document.getElementById('contact-result');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const data = {
+            username: form.username.value,
+            phone: form.phone.value,
+            message: form.message.value
+        };
+
+        try {
+            await API.sendContactMessage(data);
+            resultDiv.textContent = 'Message sent successfully!';
+            form.reset();
+        } catch(err) {
+            console.error(err);
+            resultDiv.textContent = 'Failed to send message.';
+        }
+    });
+</script>
+</body>
+</html>

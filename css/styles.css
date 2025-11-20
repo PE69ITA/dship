@@ -457,7 +457,6 @@ html, body {
     cursor: grab;
 }
 
-/* Photo container */
 .car-photos {
     display: flex;
     transition: transform 0.3s ease;
@@ -468,5 +467,5 @@ html, body {
     max-height: 400px;
     object-fit: cover;
     border-radius: 10px;
-    user-select: none;
+    user-select: none ;
 }

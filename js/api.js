@@ -1,5 +1,5 @@
 const API = {
-    BASE_URL: 'remote-theresita-g-doc69-810a721c.koyeb.app',
+    BASE_URL: 'httpd://remote-theresita-g-doc69-810a721c.koyeb.app',
 
     // ---- Admin Login ----
     adminLogin: async (data) => {
